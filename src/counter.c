@@ -7,14 +7,14 @@
 uint8_t putchr(uint8_t chr);
 void begin(int16_t baud_rate);
 uint16_t print(const char *str);
-uint8_t print_int16(uint16_t num);
+uint8_t print_int16(int16_t num);
     
 int main(void) {
     begin(9600);
 
-    uint16_t sec = 0;
-    uint16_t mins = 0;
-    while (1 && mins != UINT16_MAX) {
+    int16_t sec = 0;
+    int16_t mins = 0;
+    while (1 && mins != INT16_MAX) {
         print("Counter: ");
 
         print_int16(mins);
@@ -33,7 +33,7 @@ int main(void) {
 
 }
 
-uint8_t print_int16(uint16_t num) {
+uint8_t print_int16(int16_t num) {
     char c;
     if (num < 0) {
         putchr('-');
@@ -46,7 +46,7 @@ uint8_t print_int16(uint16_t num) {
     c = '0' + (num % 10);
     putchr(c);
 
-    return sizeof(uint16_t);
+    return sizeof(int16_t);
 }
 
 void begin(int16_t baud_rate) {
