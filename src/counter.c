@@ -1,3 +1,4 @@
+#ifdef USE_MAIN_1 // TODO: define 'USE_MAIN_1' to compile this one
 #include <avr/io.h>
 #include <inttypes.h>
 #include <util/delay.h>
@@ -8,7 +9,7 @@ uint8_t putchr(uint8_t chr);
 void begin(int16_t baud_rate);
 uint16_t print(const char *str);
 uint8_t print_int16(int16_t num);
-    
+
 int main(void) {
     begin(9600);
 
@@ -33,20 +34,25 @@ int main(void) {
 
 }
 
+
 uint8_t print_int16(int16_t num) {
-    char c;
+    char buf[7];
+    int8_t i = 0;
+
     if (num < 0) {
-        putchr('-');
-        num = -num;
+        buf[0] = '-';
+        i++;
     }
 
-    if (num >= 10)
-        print_int16(num / 10);
+    do {
+        buf[i++] = '0' + (num % 10);
+        num /= 10;
+    } while (num);
 
-    c = '0' + (num % 10);
-    putchr(c);
+    while (i--)
+        putchr(buf[i]);
 
-    return sizeof(int16_t);
+    return i;
 }
 
 void begin(int16_t baud_rate) {
@@ -73,3 +79,4 @@ uint16_t print(const char *str) {
 
     return bytes;
 }
+#endif
