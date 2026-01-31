@@ -1,4 +1,5 @@
 #ifdef USE_MAIN_1 // TODO: define 'USE_MAIN_1' to compile this one
+
 #include <avr/io.h>
 #include <inttypes.h>
 #include <util/delay.h>
@@ -33,7 +34,6 @@ int main(void) {
     }
 
 }
-
 
 uint8_t print_int16(int16_t num) {
     char buf[7];

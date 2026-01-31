@@ -4,8 +4,8 @@
 #include <inttypes.h>
 #include <avr/interrupt.h>
 
-#define TIMER1_OCR_FROM_MS(ms) ((uint32_t)(((F_CPU) / 1024U) * (ms) / 1000 - 1))
-#define BAUD_TO_UBRR(baud) ((uint16_t)((F_CPU) / (16U * (baud))) - 1)
+#define TIMER1_OCR_FROM_MS(ms) (uint32_t)(((F_CPU) / 1024U) * ((ms) / 1000) - 1)
+#define get_ubrr(baud) (uint16_t)(((F_CPU) / (16ULL * (baud))) - 1)
 
 void init_timer(uint16_t ms);
 uint8_t putchr(uint8_t chr);
@@ -56,7 +56,7 @@ void init_timer(uint16_t ms) {
         -> enables TCNT1 == OCR1A to ask for interruptions
         -> sei() dependant
     */
-    
+
     sei(); // enables global interrupts (ISR works now)
 }
 
@@ -67,7 +67,7 @@ ISR(TIMER1_COMPA_vect) {
 }
 
 void init(uint16_t baud_rate) {
-    uint16_t ubrr = BAUD_TO_UBRR(baud_rate);
+    uint16_t ubrr = get_ubrr(baud_rate);
 
     UBRR0H = (uint8_t)(ubrr >> 8);
     UBRR0L = (uint8_t)ubrr;
@@ -80,14 +80,14 @@ uint8_t putchr(uint8_t chr) {
     while (!(UCSR0A & (1 << UDRE0)));
 
     UDR0 = chr;
-    return 1U;
+    return sizeof(uint8_t);
 }
 
 uint16_t println(const char *str) {
     uint16_t bytes = 0;
-    while (*str && bytes != UINT16_MAX) {
+    while (*str && bytes != UINT16_MAX)
         bytes += putchr(*str++);
-    }
+
 
     bytes += putchr('\r');
     bytes += putchr('\n');
