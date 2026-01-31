@@ -79,8 +79,17 @@ uint8_t print_int16(int16_t num) {
     char buf[7];
     int8_t i = 0;
 
+    if (num == -32768) {
+        const char* str = "-32768";
+        for (uint8_t j = 0; j < 6; j++) {
+            putchr(str[j]);
+        }
+        return 6;
+    }
+
     if (num < 0) {
         buf[0] = '-';
+        num = -num;
         i++;
     }
 
